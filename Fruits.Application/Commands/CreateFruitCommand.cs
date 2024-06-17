@@ -5,7 +5,7 @@ using OneOf;
 
 namespace Fruits.Application;
 
-using CreateFruitResult = OneOf<Fruit, ModelError>;
+using CreateFruitResult = OneOf<Fruit, Error>;
 
 public class CreateFruitCommand : IRequest<CreateFruitResult>
 {
