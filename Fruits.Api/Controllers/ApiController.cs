@@ -14,7 +14,9 @@ namespace Fruits.Api.Controllers
                 case ValidationError:
                     return BadRequest(new Response(error));
                 default:
-                    return Problem(statusCode: StatusCodes.Status500InternalServerError, title: error.Message);
+                    return StatusCode(
+                        StatusCodes.Status500InternalServerError,
+                        new Response(error));
             }
         }
     }
