@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using Fruits.Application;
+﻿using Fruits.Application;
+using Fruits.Application.Wrappers;
+using Fruits.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fruits.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
-public class FruitsController : ControllerBase
+public class FruitsController : ApiController
 {
     private readonly ISender _sender;
 
@@ -22,12 +22,8 @@ public class FruitsController : ControllerBase
         var createResult = await _sender.Send(fruit);
 
         return createResult.Match<IActionResult>(
-                fruit => Ok(fruit),
-                err => err.ErrorCode switch
-                {
-                    "err-invalid-domain" => BadRequest(err),
-                    _ => throw new UnreachableException(),
-                }
-            );
+            fruit => Ok(new Response(fruit)),
+            err => Problem(err)
+        );
     }
 }
