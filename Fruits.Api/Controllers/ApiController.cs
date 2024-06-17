@@ -9,14 +9,12 @@ namespace Fruits.Api.Controllers
     {
         protected IActionResult Problem(Error error)
         {
-            int statusCode = 500;
-
             switch (error)
             {
                 case ValidationError:
                     return BadRequest(new Response(error));
                 default:
-                    return Problem(statusCode: statusCode, title: error.Message);
+                    return Problem(statusCode: StatusCodes.Status500InternalServerError, title: error.Message);
             }
         }
     }
