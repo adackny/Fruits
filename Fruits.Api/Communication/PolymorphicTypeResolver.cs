@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Fruits.Domain.Errors;
@@ -11,19 +12,26 @@ public class PolymorphicTypeResolver : DefaultJsonTypeInfoResolver
     {
         JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
 
+        Error o = new ValidationError(null, null, null);
+
         Type baseErrorType = typeof(Error);
         if (jsonTypeInfo.Type == baseErrorType)
         {
+            var errorDerivedTypes = typeof(Error).Assembly
+                .GetTypes()
+                .Where(t => t.IsAssignableTo(baseErrorType))
+                .Select(t => new JsonDerivedType(t));
+
             jsonTypeInfo.PolymorphismOptions = new JsonPolymorphismOptions
             {
                 IgnoreUnrecognizedTypeDiscriminators = true,
                 UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FailSerialization,
-                DerivedTypes =
-                {
-                    new JsonDerivedType(typeof(Error)),
-                    new JsonDerivedType(typeof(ValidationError))
-                }
             };
+
+            foreach (var derived in errorDerivedTypes)
+            {
+                jsonTypeInfo.PolymorphismOptions.DerivedTypes.Add(derived);
+            }
         }
 
         return jsonTypeInfo;
