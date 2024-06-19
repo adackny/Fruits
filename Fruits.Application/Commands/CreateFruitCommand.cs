@@ -1,13 +1,10 @@
-﻿using Fruits.Domain.Errors;
+﻿using ErrorOr;
 using Fruits.Domain.Models;
 using MediatR;
-using OneOf;
 
 namespace Fruits.Application;
 
-using CreateFruitResult = OneOf<Fruit, Error>;
-
-public class CreateFruitCommand : IRequest<CreateFruitResult>
+public class CreateFruitCommand : IRequest<ErrorOr<Fruit>>
 {
     public required string Name { get; set; }
 

@@ -1,12 +1,10 @@
-﻿using Fruits.Domain.Errors;
-
-namespace Fruits.Application.Wrappers
+﻿namespace Fruits.Application.Wrappers
 {
-    public class Response
+    public struct Response
     {
         public bool Succeeded { get; }
         public object? Data { get; }
-        public Error? Error { get; }
+        public ErrorResponse? Error { get; }
 
         public Response(object data)
         {
@@ -14,7 +12,7 @@ namespace Fruits.Application.Wrappers
             Data = data;
         }
 
-        public Response(Error error)
+        public Response(ErrorResponse error)
         {
             Succeeded = false;
             Error = error;

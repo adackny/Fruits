@@ -1,14 +1,10 @@
-﻿using Fruits.Domain;
-using Fruits.Domain.Errors;
+﻿using ErrorOr;
 using Fruits.Domain.Models;
 using MediatR;
-using OneOf;
 
 namespace Fruits.Application;
 
-using CreateFruitResult = OneOf<Fruit, Error>;
-
-public class CreateFruitHandler : IRequestHandler<CreateFruitCommand, CreateFruitResult>
+public class CreateFruitHandler : IRequestHandler<CreateFruitCommand, ErrorOr<Fruit>>
 {
     private readonly FruitsService _fruitsService;
 
@@ -17,13 +13,11 @@ public class CreateFruitHandler : IRequestHandler<CreateFruitCommand, CreateFrui
         _fruitsService = fruitsService;
     }
 
-
-    public async Task<CreateFruitResult> Handle(
-        CreateFruitCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Fruit>> Handle(CreateFruitCommand request, CancellationToken cancellationToken)
     {
-        var fruit = request.ToFruitDomain();
-        var fruitResult = await _fruitsService.AddAsync(fruit);
+        Fruit fruit = request.ToFruitDomain();
+        ErrorOr<Fruit> result = await _fruitsService.AddAsync(fruit);
 
-        return fruitResult;
+        return result;
     }
 }

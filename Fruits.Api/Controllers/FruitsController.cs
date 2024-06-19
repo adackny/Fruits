@@ -1,4 +1,6 @@
-﻿using Fruits.Application;
+﻿using ErrorOr;
+using Fruits.Application;
+using Fruits.Application.Queries;
 using Fruits.Application.Wrappers;
 using Fruits.Domain.Models;
 using MediatR;
@@ -7,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fruits.Api.Controllers;
 
 [Route("[controller]")]
-public class FruitsController : ApiController
+public class FruitsController : ApiControllerBase
 {
     private readonly ISender _sender;
 
@@ -17,13 +19,25 @@ public class FruitsController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateFruitCommand fruit)
+    public async Task<IActionResult> Create(CreateFruitCommand createFruitCommand)
     {
-        var createResult = await _sender.Send(fruit);
+        ErrorOr<Fruit> result = await _sender.Send(createFruitCommand);
 
-        return createResult.Match<IActionResult>(
+        return result.Match<IActionResult>(
             fruit => Ok(new Response(fruit)),
-            err => Problem(err)
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var getFruitsQuery = new GetFruitsQuery();
+        ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(getFruitsQuery);
+
+        return result.Match<IActionResult>(
+            fruits => Ok(new Response(fruits)),
+            errors => Problem(errors)
         );
     }
 }

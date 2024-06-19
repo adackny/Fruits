@@ -4,7 +4,7 @@ using Fruits.Infra.Contexts;
 
 namespace Fruits.Infra;
 
-public class FruitsUnitOfWork : IFruitsUnitOfWork
+public class FruitsUnitOfWork : IFruitsUnitOfWork, IDisposable
 {
     private readonly FruitsDbContext _context;
     private readonly IFruitsRepository _fruitsRepository;
@@ -20,5 +20,10 @@ public class FruitsUnitOfWork : IFruitsUnitOfWork
     public Task SaveChangesAsync()
     {
         return _context.SaveChangesAsync();
+    }
+
+    public void Dispose()
+    {
+       _context.Dispose();
     }
 }

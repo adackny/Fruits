@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
+using ErrorOr;
 using Fruits.Application.Wrappers;
-using Fruits.Domain.Errors;
 
 namespace Fruits.Api.Middlewares;
 
@@ -22,7 +22,10 @@ public class ErrorHandlingMiddleware(RequestDelegate _next)
     private static Task HandleExceptionAsync(HttpContext context)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        var error = new Error("internal-server-error", "An error occurred while proccessing your request.", []);
+        var error = Error.Unexpected(
+            code:"internal-server-error",
+            description: "An error occurred while proccessing your request."
+        );
         
         var result = JsonSerializer.Serialize(new Response(error));
 

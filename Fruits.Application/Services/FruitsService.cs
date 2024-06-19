@@ -1,34 +1,40 @@
-﻿using FluentValidation;
+﻿using ErrorOr;
+using FluentValidation;
 using Fruits.Domain;
 using Fruits.Domain.Errors;
 using Fruits.Domain.Models;
-using OneOf;
 
 namespace Fruits.Application;
 
-using CreateFruitResult = OneOf<Fruit, Error>;
-
 public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unitOfWork)
 {
-    public async Task<CreateFruitResult> AddAsync(Fruit fruit)
+    public async Task<ErrorOr<Fruit>> AddAsync(Fruit fruit)
     {
-
         var validationResult = _validator.Validate(fruit);
+
         if (!validationResult.IsValid)
         {
-            var error = new ValidationError("fruit-validation", "Fruit model validation failed.", []);
+            var error = FruitError.InvalidModel;
 
             foreach (var validation in validationResult.Errors)
             {
-                error.Details.Add(validation.PropertyName, validation.ErrorMessage);
+                error.Metadata?.Add(validation.PropertyName, validation.ErrorMessage);
             }
 
             return error;
         }
 
-        var fruitResult = await _unitOfWork.FruitsRepository.AddAsync(fruit);
+        Fruit fruitResult = await _unitOfWork.FruitsRepository.AddAsync(fruit);
         await _unitOfWork.SaveChangesAsync();
 
         return fruitResult;
+    }
+
+    public async Task<ErrorOr<IEnumerable<Fruit>>> GetAllAsync()
+    {
+        var fruits = await _unitOfWork.FruitsRepository.GetAllAsyn();
+        var result = ErrorOrFactory.From(fruits);
+
+        return result;
     }
 }

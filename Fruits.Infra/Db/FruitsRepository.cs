@@ -1,7 +1,7 @@
-﻿using Fruits.Domain;
-using Fruits.Domain.Models;
+﻿using Fruits.Domain.Models;
 using Fruits.Domain.Repositories;
 using Fruits.Infra.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fruits.Infra;
 
@@ -12,8 +12,8 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
         return result.Entity;
     }
 
-    public IQueryable<Fruit> GetAll()
+    public async Task<IEnumerable<Fruit>> GetAllAsyn()
     {
-        return _context.Fruits.AsQueryable();
+        return await _context.Fruits.ToListAsync();
     }
 }
