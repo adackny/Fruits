@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Fruits.Application;
+using Fruits.Application.Parameters;
 using Fruits.Application.Queries;
 using Fruits.Application.Wrappers;
 using Fruits.Domain.Models;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fruits.Api.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class FruitsController : ApiControllerBase
 {
     private readonly ISender _sender;
@@ -23,20 +24,25 @@ public class FruitsController : ApiControllerBase
     {
         ErrorOr<Fruit> result = await _sender.Send(createFruitCommand);
 
-        return result.Match<IActionResult>(
+        return result.Match(
             fruit => Ok(new Response(fruit)),
             errors => Problem(errors)
         );
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationParameter paginationParams)
     {
-        var getFruitsQuery = new GetFruitsQuery();
-        ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(getFruitsQuery);
+        var getAllFruitsQuery = new GetAllFruitsQuery
+        {
+            PageNumber = paginationParams.PageNumber,
+            PageSize = paginationParams.PageSize
+        };
 
-        return result.Match<IActionResult>(
-            fruits => Ok(new Response(fruits)),
+        ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(getAllFruitsQuery);
+
+        return result.Match(
+            fruits => Ok(new PagedResponse(paginationParams.PageNumber, paginationParams.PageSize, fruits)),
             errors => Problem(errors)
         );
     }

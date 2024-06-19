@@ -30,9 +30,9 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
         return fruitResult;
     }
 
-    public async Task<ErrorOr<IEnumerable<Fruit>>> GetAllAsync()
+    public async Task<ErrorOr<IEnumerable<Fruit>>> ListAsync(int pageNumber, int pageSize)
     {
-        var fruits = await _unitOfWork.FruitsRepository.GetAllAsyn();
+        var fruits = await _unitOfWork.FruitsRepository.ListAsyn(pageNumber, pageSize);
         var result = ErrorOrFactory.From(fruits);
 
         return result;

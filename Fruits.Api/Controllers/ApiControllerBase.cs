@@ -9,7 +9,7 @@ namespace Fruits.Api.Controllers
     {
         protected IActionResult Problem(List<Error> errors)
         {
-            Error firstError = errors[0];
+            ErrorOr.Error firstError = errors[0];
 
             switch (firstError.Type)
             {

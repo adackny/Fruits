@@ -1,10 +1,10 @@
 ﻿namespace Fruits.Application.Wrappers
 {
-    public struct Response
+    public class Response
     {
         public bool Succeeded { get; }
         public object? Data { get; }
-        public ErrorResponse? Error { get; }
+        public ErrorWrapper? Error { get; }
 
         public Response(object data)
         {
@@ -12,7 +12,7 @@
             Data = data;
         }
 
-        public Response(ErrorResponse error)
+        public Response(ErrorWrapper error)
         {
             Succeeded = false;
             Error = error;

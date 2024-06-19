@@ -6,5 +6,5 @@ public interface IFruitsRepository
 {
     Task<Fruit> AddAsync(Fruit entity);
 
-    Task<IEnumerable<Fruit>> GetAllAsyn();
+    Task<IEnumerable<Fruit>> ListAsyn(int pageNumber, int pageSize);
 }

@@ -22,7 +22,7 @@ public class ErrorHandlingMiddleware(RequestDelegate _next)
     private static Task HandleExceptionAsync(HttpContext context)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        var error = Error.Unexpected(
+        var error = ErrorOr.Error.Unexpected(
             code:"internal-server-error",
             description: "An error occurred while proccessing your request."
         );
