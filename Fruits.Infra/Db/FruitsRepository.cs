@@ -14,6 +14,11 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
         return result.Entity;
     }
 
+    public async Task<Fruit?> GetByIdAsync(int id)
+    {
+        return await _context.Fruits.FindAsync(id);
+    }
+
     public async Task<IEnumerable<Fruit>> ListAsyn(int pageNumber, int pageSize)
     {
         return await _context.Fruits
