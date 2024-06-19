@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 
-namespace Fruits.Application.Wrappers;
+namespace Fruits.Api.Communication.Wrappers;
 
 public record struct ErrorWrapper(string Code, string Description, Dictionary<string, object>? Metadata)
 {

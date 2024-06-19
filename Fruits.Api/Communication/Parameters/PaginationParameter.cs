@@ -1,4 +1,4 @@
-﻿namespace Fruits.Application.Parameters
+﻿namespace Fruits.Api.Communication.Parameters
 {
     public class PaginationParameter
     {

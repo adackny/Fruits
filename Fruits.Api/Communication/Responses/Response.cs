@@ -1,4 +1,4 @@
-﻿namespace Fruits.Application.Wrappers
+﻿namespace Fruits.Api.Communication.Wrappers
 {
     public class Response
     {

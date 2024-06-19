@@ -1,8 +1,8 @@
 ﻿using ErrorOr;
 using Fruits.Application;
-using Fruits.Application.Parameters;
+using Fruits.Api.Communication.Parameters;
 using Fruits.Application.Queries;
-using Fruits.Application.Wrappers;
+using Fruits.Api.Communication.Wrappers;
 using Fruits.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
