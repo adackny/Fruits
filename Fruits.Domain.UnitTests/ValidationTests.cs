@@ -16,7 +16,7 @@ public class ValidationTests
     }
 
     [Fact]
-    public void CaducityLessThan3Days_ShoulsGiveError()
+    public void CaducityLessThan3Days_ShouldGiveError()
     {
         ServiceProvider serviceProvider = _services.BuildServiceProvider();
 
