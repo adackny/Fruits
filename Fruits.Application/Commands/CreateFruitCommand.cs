@@ -6,11 +6,11 @@ namespace Fruits.Application;
 
 public class CreateFruitCommand : IRequest<ErrorOr<Fruit>>
 {
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
-    public required DateOnly Caducity { get; set; }
+    public required DateOnly Caducity { get; init; }
 
-    public required List<string> Colors { get; set; }
+    public required List<string> Colors { get; init; }
 
     public Fruit ToFruitDomain() => new()
     {

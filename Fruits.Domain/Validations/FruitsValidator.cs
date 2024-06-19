@@ -3,9 +3,9 @@ using Fruits.Domain.Models;
 
 namespace Fruits.Domain.Validations;
 
-public class FruitsValidations : AbstractValidator<Fruit>
+public class FruitsValidator : AbstractValidator<Fruit>
 {
-    public FruitsValidations()
+    public FruitsValidator()
     {
         RuleFor(m => m.Name).NotEmpty().WithMessage("La fruta debe tener un nombre");
         RuleFor(m => m.Caducity)

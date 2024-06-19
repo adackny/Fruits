@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using Fruits.Application;
-using Fruits.Api.Communication.Parameters;
 using Fruits.Application.Queries;
 using Fruits.Api.Communication.Wrappers;
 using Fruits.Domain.Models;
@@ -20,9 +19,9 @@ public class FruitsController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateFruitCommand createFruitCommand)
+    public async Task<IActionResult> Create(CreateFruitCommand command)
     {
-        ErrorOr<Fruit> result = await _sender.Send(createFruitCommand);
+        ErrorOr<Fruit> result = await _sender.Send(command);
 
         return result.Match(
             fruit => Ok(new Response(fruit)),
@@ -31,18 +30,30 @@ public class FruitsController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] PaginationParameter paginationParams)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllFruitsQuery query)
     {
         var getAllFruitsQuery = new GetAllFruitsQuery
         {
-            PageNumber = paginationParams.PageNumber,
-            PageSize = paginationParams.PageSize
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize
         };
 
         ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(getAllFruitsQuery);
 
         return result.Match(
-            fruits => Ok(new PagedResponse(paginationParams.PageNumber, paginationParams.PageSize, fruits)),
+            fruits => Ok(new PagedResponse(query.PageNumber, query.PageSize, fruits)),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var query = new GetFruitByIdQuery { Id = id };
+        ErrorOr<Fruit> result = await _sender.Send(query);
+
+        return result.Match(
+            fruit => Ok(new Response(fruit)),
             errors => Problem(errors)
         );
     }

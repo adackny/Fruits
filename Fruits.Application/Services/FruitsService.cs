@@ -30,6 +30,17 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
         return fruitResult;
     }
 
+    public async Task<ErrorOr<Fruit?>> GetByIdAsync(int id)
+    {
+        if (id <= 0) return CommonError.InvalidId;
+
+        Fruit? fruit = await _unitOfWork.FruitsRepository.GetByIdAsync(id);
+
+        if (fruit == null) return FruitError.FruitNotFound;
+
+        return fruit;
+    }
+
     public async Task<ErrorOr<IEnumerable<Fruit>>> ListAsync(int pageNumber, int pageSize)
     {
         var fruits = await _unitOfWork.FruitsRepository.ListAsync(pageNumber, pageSize);

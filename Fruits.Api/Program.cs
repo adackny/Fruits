@@ -39,7 +39,7 @@ builder.Services.AddMediatR(config =>
 builder.Services.AddScoped<IFruitsUnitOfWork, FruitsUnitOfWork>();
 builder.Services.AddScoped<IFruitsRepository, FruitsRepository>();
 builder.Services.AddScoped<FruitsService>();
-builder.Services.AddScoped<IValidator<Fruit>, FruitsValidations>();
+builder.Services.AddScoped<IValidator<Fruit>, FruitsValidator>();
 
 var app = builder.Build();
 
