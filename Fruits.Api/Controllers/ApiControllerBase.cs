@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Fruits.Application.Wrappers;
 using ErrorOr;
+using Fruits.Api.Communication.Wrappers;
 
 namespace Fruits.Api.Controllers
 {

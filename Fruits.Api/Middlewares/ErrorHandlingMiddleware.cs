@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using ErrorOr;
-using Fruits.Application.Wrappers;
+using Fruits.Api.Communication.Wrappers;
 
 namespace Fruits.Api.Middlewares;
 
