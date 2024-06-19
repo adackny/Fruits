@@ -6,6 +6,6 @@
             code: "fruit-validation",
             description: "Fruit model validation failed.",
             []
-            );
-        }
+        );
+    }
 }
