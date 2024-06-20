@@ -32,13 +32,7 @@ public class FruitsController : ApiControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] GetAllFruitsQuery query)
     {
-        var getAllFruitsQuery = new GetAllFruitsQuery
-        {
-            PageNumber = query.PageNumber,
-            PageSize = query.PageSize
-        };
-
-        ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(getAllFruitsQuery);
+        ErrorOr<IEnumerable<Fruit>> result = await _sender.Send(query);
 
         return result.Match(
             fruits => Ok(new PagedResponse(query.PageNumber, query.PageSize, fruits)),
