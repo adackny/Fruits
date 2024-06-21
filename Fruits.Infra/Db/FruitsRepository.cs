@@ -14,6 +14,21 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
         return result.Entity;
     }
 
+    public async Task<Fruit?> UpdateAsync(Fruit entity)
+    {
+        Fruit? fruit = await GetByIdAsync(entity.Id);
+
+        if (fruit is null) return null;
+
+        fruit.Name = entity.Name;
+        fruit.Caducity = entity.Caducity;
+        fruit.Colors = entity.Colors;
+
+        _context.Fruits.Update(fruit);
+
+        return fruit;
+    }
+
     public async Task<Fruit?> GetByIdAsync(int id)
     {
         return await _context.Fruits.FindAsync(id);

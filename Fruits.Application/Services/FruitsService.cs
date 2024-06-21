@@ -30,13 +30,38 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
         return fruitResult;
     }
 
+    public async Task<ErrorOr<Fruit?>> UpdateAsync(Fruit fruit)
+    {
+        var validationResult = _validator.Validate(fruit);
+
+        if (!validationResult.IsValid)
+        {
+            var error = FruitError.InvalidModel;
+
+            foreach (var validation in validationResult.Errors)
+            {
+                error.Metadata?.Add(validation.PropertyName, validation.ErrorMessage);
+            }
+
+            return error;
+        }
+
+        Fruit? fruitResult = await _unitOfWork.FruitsRepository.UpdateAsync(fruit);
+
+        if (fruit is null) return FruitError.FruitNotFound;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return fruitResult;
+    }
+
     public async Task<ErrorOr<Fruit?>> GetByIdAsync(int id)
     {
         if (id <= 0) return CommonError.InvalidId;
 
         Fruit? fruit = await _unitOfWork.FruitsRepository.GetByIdAsync(id);
 
-        if (fruit == null) return FruitError.FruitNotFound;
+        if (fruit is null) return FruitError.FruitNotFound;
 
         return fruit;
     }

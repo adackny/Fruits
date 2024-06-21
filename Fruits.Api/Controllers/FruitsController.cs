@@ -5,6 +5,9 @@ using Fruits.Api.Communication.Wrappers;
 using Fruits.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Fruits.Application.Commands;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Fruits.Api.Errors;
 
 namespace Fruits.Api.Controllers;
 
@@ -25,6 +28,24 @@ public class FruitsController : ApiControllerBase
 
         return result.Match(
             fruit => Ok(new Response(fruit)),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UpdateFruitCommand command)
+    {
+        if (id != command.Id)
+        {
+            var error = CommonError.IdMismatch;
+
+            return Problem([error]);
+        }
+
+        ErrorOr<Fruit?> result = await _sender.Send(command);
+
+        return result.Match(
+            fruit => Ok(new Response(fruit!)),
             errors => Problem(errors)
         );
     }

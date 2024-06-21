@@ -1,15 +1,17 @@
-﻿namespace Fruits.Domain.Errors
+﻿using ErrorOr;
+
+namespace Fruits.Domain.Errors
 {
     public static class FruitError
     {
-        public static ErrorOr.Error InvalidModel => ErrorOr.Error.Validation
+        public static Error InvalidModel => Error.Validation
         (
             code: "fruit-validation",
             description: "Fruit model validation failed.",
             []
         );
 
-        public static ErrorOr.Error FruitNotFound => ErrorOr.Error.NotFound(
+        public static Error FruitNotFound => Error.NotFound(
             code: "fruit-not-found",
             description: "Fruit not found.",
             []);

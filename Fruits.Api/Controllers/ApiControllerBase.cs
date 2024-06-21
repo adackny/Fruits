@@ -15,10 +15,16 @@ namespace Fruits.Api.Controllers
             {
                 case ErrorType.Validation:
                     return BadRequest(new Response(firstError));
+                case ErrorType.Conflict:
+                    return Conflict(new Response(firstError));
+                case ErrorType.NotFound:
+                    return NotFound(new Response(firstError));
+                case ErrorType.Unauthorized:
+                    return Unauthorized(new Response(firstError));
+                case ErrorType.Forbidden:
+                    return StatusCode(StatusCodes.Status403Forbidden, new Response(firstError));
                 default:
-                    return StatusCode(
-                        StatusCodes.Status500InternalServerError,
-                        new Response(firstError));
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response(firstError));
             }
         }
     }

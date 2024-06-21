@@ -1,8 +1,10 @@
-﻿namespace Fruits.Domain.Errors
+﻿using ErrorOr;
+
+namespace Fruits.Domain.Errors
 {
     public static class CommonError
     {
-        public static ErrorOr.Error InvalidId => ErrorOr.Error.Validation
+        public static Error InvalidId => Error.Validation
         (
             code: "id-validation",
             description: "Id validation failed.",

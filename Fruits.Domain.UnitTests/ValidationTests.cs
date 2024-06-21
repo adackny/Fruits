@@ -12,7 +12,7 @@ public class ValidationTests
     public ValidationTests()
     {
         _services = new ServiceCollection();
-        _services.AddScoped<IValidator<Fruit>, FruitsValidator>();
+        _services.AddScoped<IValidator<Fruit>, CreateFruitValidator>();
     }
 
     [Fact]

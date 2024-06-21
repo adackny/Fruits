@@ -6,5 +6,5 @@ public interface IFruitsUnitOfWork
 {
     IFruitsRepository FruitsRepository { get; }
 
-    Task SaveChangesAsync();
+    Task<int> SaveChangesAsync();
 }

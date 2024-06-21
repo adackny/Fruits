@@ -17,7 +17,7 @@ public class FruitsUnitOfWork : IFruitsUnitOfWork, IDisposable
 
     public IFruitsRepository FruitsRepository => _fruitsRepository;
 
-    public Task SaveChangesAsync()
+    public Task<int> SaveChangesAsync()
     {
         return _context.SaveChangesAsync();
     }

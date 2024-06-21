@@ -15,7 +15,7 @@ public class CreateFruitHandler : IRequestHandler<CreateFruitCommand, ErrorOr<Fr
 
     public async Task<ErrorOr<Fruit>> Handle(CreateFruitCommand request, CancellationToken cancellationToken)
     {
-        Fruit fruit = request.ToFruitDomain();
+        Fruit fruit = request;
         ErrorOr<Fruit> result = await _fruitsService.AddAsync(fruit);
 
         return result;

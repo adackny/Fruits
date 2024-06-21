@@ -8,14 +8,17 @@ public class CreateFruitCommand : IRequest<ErrorOr<Fruit>>
 {
     public required string Name { get; init; }
 
-    public required DateOnly Caducity { get; init; }
+    public DateOnly Caducity { get; init; }
 
     public required List<string> Colors { get; init; }
 
-    public Fruit ToFruitDomain() => new()
+    public static implicit operator Fruit(CreateFruitCommand createFruitCommand)
     {
-        Name = Name,
-        Caducity = Caducity,
-        Colors = Colors
-    };
+        return new Fruit
+        {
+            Name = createFruitCommand.Name,
+            Caducity = createFruitCommand.Caducity,
+            Colors = createFruitCommand.Colors
+        };
+    }
 }
