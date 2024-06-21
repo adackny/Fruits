@@ -1,16 +1,18 @@
 ﻿using ErrorOr;
-using FluentValidation;
 using Fruits.Domain;
 using Fruits.Domain.Errors;
 using Fruits.Domain.Models;
+using Fruits.Domain.Validations;
 
 namespace Fruits.Application;
 
-public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unitOfWork)
+public class FruitsService(CreateFruitValidator _createFruitValidator,
+    UpdateFruitValidator _updateFruitValidator, 
+    IFruitsUnitOfWork _unitOfWork)
 {
     public async Task<ErrorOr<Fruit>> AddAsync(Fruit fruit)
     {
-        var validationResult = _validator.Validate(fruit);
+        var validationResult = _createFruitValidator.Validate(fruit);
 
         if (!validationResult.IsValid)
         {
@@ -32,7 +34,7 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
 
     public async Task<ErrorOr<Fruit?>> UpdateAsync(Fruit fruit)
     {
-        var validationResult = _validator.Validate(fruit);
+        var validationResult = _updateFruitValidator.Validate(fruit);
 
         if (!validationResult.IsValid)
         {
