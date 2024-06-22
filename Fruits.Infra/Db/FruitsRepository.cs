@@ -41,4 +41,9 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public void Remove(Fruit entity)
+    {
+        _context.Fruits.Remove(entity);
+    }
 }

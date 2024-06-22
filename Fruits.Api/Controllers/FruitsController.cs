@@ -71,4 +71,16 @@ public class FruitsController : ApiControllerBase
             errors => Problem(errors)
         );
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var command = new DeleteFruitCommand { Id = id };
+        ErrorOr<Fruit> result = await _sender.Send(command);
+
+        return result.Match(
+            fruit => Ok(new Response(fruit)),
+            errors => Problem(errors)
+        );
+    }
 }

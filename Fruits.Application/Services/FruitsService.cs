@@ -2,6 +2,7 @@
 using Fruits.Domain;
 using Fruits.Domain.Errors;
 using Fruits.Domain.Models;
+using Fruits.Domain.Repositories;
 using Fruits.Domain.Validations;
 
 namespace Fruits.Application;
@@ -74,5 +75,20 @@ public class FruitsService(CreateFruitValidator _createFruitValidator,
         var result = ErrorOrFactory.From(fruits);
 
         return result;
+    }
+
+    public async Task<ErrorOr<Fruit>> RemoveAsync(int id)
+    {
+        if (id <= 0) return CommonError.InvalidId;
+
+        IFruitsRepository fruitsRepository = _unitOfWork.FruitsRepository;
+        Fruit? fruit = await fruitsRepository.GetByIdAsync(id);
+
+        if (fruit is null) return FruitError.FruitNotFound;
+
+        fruitsRepository.Remove(fruit);
+        await _unitOfWork.SaveChangesAsync();
+
+        return fruit;
     }
 }
