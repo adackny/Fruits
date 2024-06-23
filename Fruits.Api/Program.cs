@@ -2,6 +2,8 @@ using FluentValidation;
 using Fruits.Api;
 using Fruits.Api.Middlewares;
 using Fruits.Application;
+using Fruits.Application.Commands;
+using Fruits.Application.Validators;
 using Fruits.Domain;
 using Fruits.Domain.Models;
 using Fruits.Domain.Repositories;
@@ -38,8 +40,10 @@ builder.Services.AddMediatR(config =>
 builder.Services.AddScoped<IFruitsUnitOfWork, FruitsUnitOfWork>();
 builder.Services.AddScoped<IFruitsRepository, FruitsRepository>();
 builder.Services.AddScoped<FruitsService>();
-builder.Services.AddScoped<CreateFruitValidator>();
-builder.Services.AddScoped<UpdateFruitValidator>();
+builder.Services.AddScoped<IValidator<Fruit>, FruitValidator>();
+
+builder.Services.AddScoped<IValidator<CreateFruitCommand>, CreateFruitValidator>();
+builder.Services.AddScoped<IValidator<UpdateFruitCommand>, UpdateFruitValidator>();
 
 var app = builder.Build();
 

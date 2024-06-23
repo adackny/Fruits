@@ -2,7 +2,7 @@
 using Fruits.Domain.Models;
 using MediatR;
 
-namespace Fruits.Application;
+namespace Fruits.Application.Commands;
 
 public class CreateFruitCommand : IRequest<ErrorOr<Fruit>>
 {

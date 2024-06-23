@@ -38,7 +38,7 @@ public class FruitsController : ApiControllerBase
 
         return result.Match(
             fruits => Ok(new PagedResponse(query.PageNumber, query.PageSize, fruits)),
-            errors => Problem(errors)
+            Problem
         );
     }
 
@@ -54,16 +54,9 @@ public class FruitsController : ApiControllerBase
         );
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateFruitCommand command)
+    [HttpPut]
+    public async Task<IActionResult> Update(UpdateFruitCommand command)
     {
-        if (id != command.Id)
-        {
-            var error = CommonError.IdMismatch;
-
-            return Problem([error]);
-        }
-
         ErrorOr<Fruit?> result = await _sender.Send(command);
 
         return result.Match(
