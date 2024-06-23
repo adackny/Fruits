@@ -3,9 +3,9 @@ using Fruits.Domain.Models;
 
 namespace Fruits.Domain.Validations;
 
-public class CreateFruitValidator : AbstractValidator<Fruit>
+public class FruitValidator : AbstractValidator<Fruit>
 {
-    public CreateFruitValidator()
+    public FruitValidator()
     {
         RuleFor(m => m.Name)
             .NotEmpty()

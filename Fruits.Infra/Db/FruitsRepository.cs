@@ -14,19 +14,11 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
         return result.Entity;
     }
 
-    public async Task<Fruit?> UpdateAsync(Fruit entity)
+    public Fruit Update(Fruit entity)
     {
-        Fruit? fruit = await GetByIdAsync(entity.Id);
+        var result = _context.Fruits.Update(entity);
 
-        if (fruit is null) return null;
-
-        fruit.Name = entity.Name;
-        fruit.Caducity = entity.Caducity;
-        fruit.Colors = entity.Colors;
-
-        _context.Fruits.Update(fruit);
-
-        return fruit;
+        return result.Entity;
     }
 
     public async Task<Fruit?> GetByIdAsync(int id)
@@ -40,5 +32,10 @@ public class FruitsRepository(FruitsDbContext _context) : IFruitsRepository
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+    }
+
+    public void Remove(Fruit entity)
+    {
+        _context.Fruits.Remove(entity);
     }
 }

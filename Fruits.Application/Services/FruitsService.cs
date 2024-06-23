@@ -3,27 +3,15 @@ using FluentValidation;
 using Fruits.Domain;
 using Fruits.Domain.Errors;
 using Fruits.Domain.Models;
+using Fruits.Domain.Repositories;
+using Fruits.Domain.Validations;
 
 namespace Fruits.Application;
 
-public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unitOfWork)
+public class FruitsService(IFruitsUnitOfWork _unitOfWork)
 {
     public async Task<ErrorOr<Fruit>> AddAsync(Fruit fruit)
     {
-        var validationResult = _validator.Validate(fruit);
-
-        if (!validationResult.IsValid)
-        {
-            var error = FruitError.InvalidModel;
-
-            foreach (var validation in validationResult.Errors)
-            {
-                error.Metadata?.Add(validation.PropertyName, validation.ErrorMessage);
-            }
-
-            return error;
-        }
-
         Fruit fruitResult = await _unitOfWork.FruitsRepository.AddAsync(fruit);
         await _unitOfWork.SaveChangesAsync();
 
@@ -32,27 +20,26 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
 
     public async Task<ErrorOr<Fruit?>> UpdateAsync(Fruit fruit)
     {
-        var validationResult = _validator.Validate(fruit);
+        IFruitsRepository fruitsRepository = _unitOfWork.FruitsRepository;
+        Fruit? existingFruit = await fruitsRepository.GetByIdAsync(fruit.Id);
 
-        if (!validationResult.IsValid)
+        if (existingFruit is null)
+            return FruitError.FruitNotFound;
+
+        if (fruit.Caducity < existingFruit.Caducity
+            && fruit.Caducity < DateOnly.FromDateTime(DateTime.UtcNow))
         {
-            var error = FruitError.InvalidModel;
-
-            foreach (var validation in validationResult.Errors)
-            {
-                error.Metadata?.Add(validation.PropertyName, validation.ErrorMessage);
-            }
-
-            return error;
+            return FruitError.InvalidModel;
         }
 
-        Fruit? fruitResult = await _unitOfWork.FruitsRepository.UpdateAsync(fruit);
+        existingFruit.Name = fruit.Name;
+        existingFruit.Caducity = fruit.Caducity;
+        existingFruit.Colors = fruit.Colors;
 
-        if (fruit is null) return FruitError.FruitNotFound;
-
+        fruitsRepository.Update(existingFruit);
         await _unitOfWork.SaveChangesAsync();
 
-        return fruitResult;
+        return existingFruit;
     }
 
     public async Task<ErrorOr<Fruit?>> GetByIdAsync(int id)
@@ -72,5 +59,20 @@ public class FruitsService(IValidator<Fruit> _validator, IFruitsUnitOfWork _unit
         var result = ErrorOrFactory.From(fruits);
 
         return result;
+    }
+
+    public async Task<ErrorOr<Fruit>> RemoveAsync(int id)
+    {
+        if (id <= 0) return CommonError.InvalidId;
+
+        IFruitsRepository fruitsRepository = _unitOfWork.FruitsRepository;
+        Fruit? fruit = await fruitsRepository.GetByIdAsync(id);
+
+        if (fruit is null) return FruitError.FruitNotFound;
+
+        fruitsRepository.Remove(fruit);
+        await _unitOfWork.SaveChangesAsync();
+
+        return fruit;
     }
 }
