@@ -49,10 +49,12 @@ public class FruitsService(CreateFruitValidator _createFruitValidator,
             return error;
         }
 
-        Fruit? fruitResult = await _unitOfWork.FruitsRepository.UpdateAsync(fruit);
+        IFruitsRepository fruitsRepository = _unitOfWork.FruitsRepository;
+        Fruit? fruitResult = await fruitsRepository.GetByIdAsync(fruit.Id);
 
-        if (fruit is null) return FruitError.FruitNotFound;
+        if (fruitResult is null) return FruitError.FruitNotFound;
 
+        fruitsRepository.Update(fruitResult);        
         await _unitOfWork.SaveChangesAsync();
 
         return fruitResult;
