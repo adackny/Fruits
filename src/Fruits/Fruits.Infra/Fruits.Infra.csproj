@@ -12,10 +12,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fruits.Domain\Fruits.Domain.csproj" />
+    <ProjectReference Include="..\Fruits.Application\Fruits.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
