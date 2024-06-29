@@ -6,6 +6,7 @@ using Fruits.Application.Commands;
 using Fruits.Application.Queries;
 using Fruits.Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fruits.Api.Controllers;
@@ -21,6 +22,7 @@ public class FruitsController : ApiControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create(CreateFruitCommand command)
     {
         ErrorOr<Fruit> result = await _sender.Send(command);
@@ -46,7 +48,7 @@ public class FruitsController : ApiControllerBase
     public async Task<IActionResult> Get(int id)
     {
         var query = new GetFruitByIdQuery { Id = id };
-        ErrorOr<Fruit> result = await _sender.Send(query);
+        ErrorOr<FruitWithPrice> result = await _sender.Send(query);
 
         return result.Match(
             fruit => Ok(new Response(fruit)),

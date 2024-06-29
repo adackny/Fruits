@@ -10,6 +10,7 @@ using Fruits.Domain.Repositories;
 using Fruits.Domain.Validations;
 using Fruits.Infra;
 using Fruits.Infra.Contexts;
+using Fruits.Infra.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,28 +28,12 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<ITradingFruitsService, TradingFruitsService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5109");
-});
+var connectionString = builder.Configuration.GetConnectionString("Sqlite")
+    ?? "Data source=fruits.db";
 
-var connectionString = builder.Configuration.GetConnectionString("Sqlite");
+builder.Services.AddInfraLayer(connectionString);
 
-builder.Services.AddDbContext<FruitsDbContext>(optionsBuilder =>
-    optionsBuilder.UseSqlite("Data source=fruits.db"));
-
-builder.Services.AddMediatR(config =>
-    config.RegisterServicesFromAssemblies(
-        typeof(IMediatRMarker).Assembly
-    ));
-
-builder.Services.AddScoped<IFruitsUnitOfWork, FruitsUnitOfWork>();
-builder.Services.AddScoped<IFruitsRepository, FruitsRepository>();
-builder.Services.AddScoped<FruitsService>();
-builder.Services.AddScoped<IValidator<Fruit>, FruitValidator>();
-
-builder.Services.AddScoped<IValidator<CreateFruitCommand>, CreateFruitValidator>();
-builder.Services.AddScoped<IValidator<UpdateFruitCommand>, UpdateFruitValidator>();
+builder.Services.AddApplicationLayer();
 
 var app = builder.Build();
 
