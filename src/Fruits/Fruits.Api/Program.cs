@@ -27,6 +27,11 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient<ITradingFruitsService, TradingFruitsService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5109");
+});
+
 var connectionString = builder.Configuration.GetConnectionString("Sqlite");
 
 builder.Services.AddDbContext<FruitsDbContext>(optionsBuilder =>
