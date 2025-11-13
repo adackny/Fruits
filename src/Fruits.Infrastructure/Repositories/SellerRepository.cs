@@ -4,7 +4,7 @@ using Fruits.Infrastructure.Contexts;
 
 namespace Fruits.Infrastructure.Repositories;
 
-public class SellerRepository(FruitsDbContext context) : IFruitsSellerRepository
+public class SellerRepository(FruitsDbContext context) : ISellerRepository
 {
     public async Task<IEnumerable<Seller>> GetAllAsync()
     {
